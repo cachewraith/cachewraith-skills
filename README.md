@@ -1,6 +1,6 @@
 # cachewraith-skills
 
-Five skills for Claude Code that I use daily, packaged as an installable plugin.
+Six skills for Claude Code that I use daily, packaged as an installable plugin.
 
 Each one is opinionated about a single job: audit security against a checklist, find
 performance problems that survive contact with load, use the project's own test runner,
@@ -14,7 +14,7 @@ into documentation a frontend developer can build against.
 /plugin install cachewraith-skills@cachewraith-skills
 ```
 
-Restart Claude Code, and the five skills load automatically. Claude invokes them when a
+Restart Claude Code, and the six skills load automatically. Claude invokes them when a
 request matches, or you can call one by name — `/check-security`, `/testing`, and so on.
 
 To update later:
@@ -38,6 +38,7 @@ To remove:
 | **testing** | Finds the project's existing test setup before writing a line — runner, config, conventions — then runs, writes, or debugs tests in it. Works with Jest, Vitest, Pytest, PHPUnit, Go test, cargo test, RSpec, and JUnit. |
 | **checkout-commit** | Branches as `type/short-slug-yyyymmdd`, stages, and commits as `type(scope): summary` with a real body. The message describes the change and nothing else — no model attribution, no "generated with" trailer. |
 | **generate-api-docs** | Paste endpoints as `GET : https://api.example.com/...` and it investigates them for real: calls safe read-only methods, inspects actual responses and headers, and reads any OpenAPI/Swagger metadata it can find. Publishes frontend integration docs as an Artifact and hands back the link. Documented from observed behavior, never guesses. |
+| **release-version** | Bumps the version everywhere it actually lives — manifest, lockfile, `__version__`, README badge — using the ecosystem's own tool so lockfiles stay in sync. Works across Node, Python, Rust, Go, PHP, Ruby, Java, .NET, Dart, Elixir, and Claude Code plugins, and greps for stragglers in anything it doesn't know. Picks the semver bump from the real diff since the last tag, writes the changelog entry in the format already there, tags, then pushes the commit and tag — stopping short of a registry publish. |
 
 ## Using them without installing
 
@@ -61,6 +62,7 @@ skills/
   testing/SKILL.md
   checkout-commit/SKILL.md
   generate-api-docs/SKILL.md
+  release-version/SKILL.md
 ```
 
 Validate any change before pushing:
