@@ -10,7 +10,7 @@
     {
       "name": "cachewraith-skills",
       "source": "./",
-      "description": "Five engineering skills for Claude Code: an OWASP Top Ten security audit that names the category ID for every finding, a performance audit that reports evidence rather than vibes, a test skill that finds and uses the project's own runner, a branch-and-commit helper with a fixed naming convention, and an API documentation generator that investigates real endpoints and publishes frontend-ready docs as an Artifact.",
+      "description": "Six engineering skills for Claude Code: an OWASP Top Ten security audit that names the category ID for every finding, a performance audit that reports evidence rather than vibes, a test skill that finds and uses the project's own runner, a branch-and-commit helper with a fixed naming convention, an API documentation generator that investigates real endpoints and publishes frontend-ready docs as an Artifact, and a release helper that bumps the version everywhere it lives in any ecosystem, then tags and pushes it.",
       "author": {
         "name": "cachewraith",
         "url": "https://github.com/cachewraith"
@@ -26,6 +26,8 @@
         "git",
         "commit",
         "api-docs",
+        "release",
+        "semver",
         "code-review"
       ]
     }
