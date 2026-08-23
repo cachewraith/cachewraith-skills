@@ -1,6 +1,6 @@
 # cachewraith-skills
 
-Six skills for Claude Code that I use daily, packaged as an installable plugin.
+Nine skills for Claude Code that I use daily, packaged as an installable plugin.
 
 Each one is opinionated about a single job: audit security against a checklist, find
 performance problems that survive contact with load, use the project's own test runner,
@@ -14,7 +14,7 @@ into documentation a frontend developer can build against.
 /plugin install cachewraith-skills@cachewraith-skills
 ```
 
-Restart Claude Code, and the six skills load automatically. Claude invokes them when a
+Restart Claude Code, and the nine skills load automatically. Claude invokes them when a
 request matches, or you can call one by name — `/check-security`, `/testing`, and so on.
 
 To update later:
@@ -39,6 +39,9 @@ To remove:
 | **checkout-commit** | Branches as `type/short-slug-yyyymmdd`, stages, and commits as `type(scope): summary` with a real body. The message describes the change and nothing else — no model attribution, no "generated with" trailer. |
 | **generate-api-docs** | Paste endpoints as `GET : https://api.example.com/...` and it investigates them for real: calls safe read-only methods, inspects actual responses and headers, and reads any OpenAPI/Swagger metadata it can find. Publishes frontend integration docs as an Artifact and hands back the link. Documented from observed behavior, never guesses. |
 | **release-version** | Bumps the version everywhere it actually lives — manifest, lockfile, `__version__`, README badge — using the ecosystem's own tool so lockfiles stay in sync. Works across Node, Python, Rust, Go, PHP, Ruby, Java, .NET, Dart, Elixir, and Claude Code plugins, and greps for stragglers in anything it doesn't know. Picks the semver bump from the real diff since the last tag, writes the changelog entry in the format already there, tags, then pushes the commit and tag — stopping short of a registry publish. |
+| **add-spring-structure** | Lays out a Spring Boot project as a versioned, module-per-feature package tree — `config`, `common`, `security`, `modules/<feature>/{controller,service,repository,entity,dto,mapper,validator}`, `integration`, `scheduler` — with controllers, DTOs and mappers versioned (`v1`, `v2`) over shared services. Then it writes the layout contract into `CLAUDE.md` as a managed block, so every file Claude adds later lands in the right package instead of wherever the prompt happened to point. |
+| **add-owasptopten** | Installs the OWASP Top Ten as a standing instruction in the project's `CLAUDE.md` — a managed block with the ten categories, their recurring failure modes, and the rule to cite the category ID with a `file:line` rather than saying "this looks insecure". Configures the project; `check-security` is what audits it. |
+| **add-designpattern** | Installs a design-pattern instruction in the project's `CLAUDE.md`: before any non-trivial unit, name the problem shape, the candidates, and the pick. The block is a problem-shape → pattern table rather than a catalog of definitions, and it cuts both ways — the simplest construct that works wins, write the language's idiom instead of the 1994 diagram, and do not retrofit patterns into working code. |
 
 ## Using them without installing
 
@@ -63,6 +66,9 @@ skills/
   checkout-commit/SKILL.md
   generate-api-docs/SKILL.md
   release-version/SKILL.md
+  add-spring-structure/SKILL.md
+  add-owasptopten/SKILL.md
+  add-designpattern/SKILL.md
 ```
 
 Validate any change before pushing:
