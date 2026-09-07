@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "cachewraith-skills",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A working toolkit of eleven skills for day-to-day engineering in Claude Code: an OWASP Top Ten security audit that names the category ID for every finding, a performance audit that reports evidence rather than vibes, a test skill that finds and uses the project's own runner, a branch-and-commit helper with a fixed naming convention and no model attribution in the message, an API documentation generator that investigates real endpoints and publishes frontend-ready docs as an Artifact, and a release helper that bumps the version everywhere it lives in any ecosystem, then tags and pushes it, and a Spring Boot structure skill that scaffolds a versioned module-per-feature package tree and records the layout in CLAUDE.md, and an OWASP skill that installs the Top Ten as a standing instruction in a project, and a design-pattern skill that makes pattern choice a deliberate, stated step. It also carries two low-cost conversational skills: an ask skill that answers a question after checking the real source of truth for it, in as few tool calls as possible, and a discuss skill that scopes a scan to the decision at hand, looks outward only when the answer lives outside the repo, and comes back with a recommendation and what would change its mind.",
   "author": {
     "name": "cachewraith",
