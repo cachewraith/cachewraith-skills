@@ -1,11 +1,13 @@
 # cachewraith-skills
 
-Nine skills for Claude Code that I use daily, packaged as an installable plugin.
+Eleven skills for Claude Code that I use daily, packaged as an installable plugin.
 
 Each one is opinionated about a single job: audit security against a checklist, find
 performance problems that survive contact with load, use the project's own test runner,
 commit with a consistent branch and message convention, and turn a list of endpoints
-into documentation a frontend developer can build against.
+into documentation a frontend developer can build against, answer a question without
+spending half a context window on it, or think a decision through before any of it gets
+built.
 
 ## Install
 
@@ -14,7 +16,7 @@ into documentation a frontend developer can build against.
 /plugin install cachewraith-skills@cachewraith-skills
 ```
 
-Restart Claude Code, and the nine skills load automatically. Claude invokes them when a
+Restart Claude Code, and the eleven skills load automatically. Claude invokes them when a
 request matches, or you can call one by name — `/check-security`, `/testing`, and so on.
 
 To update later:
@@ -42,6 +44,8 @@ To remove:
 | **add-spring-structure** | Lays out a Spring Boot project as a versioned, module-per-feature package tree — `config`, `common`, `security`, `modules/<feature>/{controller,service,repository,entity,dto,mapper,validator}`, `integration`, `scheduler` — with controllers, DTOs and mappers versioned (`v1`, `v2`) over shared services. Then it writes the layout contract into `CLAUDE.md` as a managed block, so every file Claude adds later lands in the right package instead of wherever the prompt happened to point. |
 | **add-owasptopten** | Installs the OWASP Top Ten as a standing instruction in the project's `CLAUDE.md` — a managed block with the ten categories, their recurring failure modes, and the rule to cite the category ID with a `file:line` rather than saying "this looks insecure". Configures the project; `check-security` is what audits it. |
 | **add-designpattern** | Installs a design-pattern instruction in the project's `CLAUDE.md`: before any non-trivial unit, name the problem shape, the candidates, and the pick. The block is a problem-shape → pattern table rather than a catalog of definitions, and it cuts both ways — the simplest construct that works wins, write the language's idiom instead of the 1994 diagram, and do not retrofit patterns into working code. |
+| **ask** | Answers a question after checking the thing that actually holds the answer — the code, the config, the command output — instead of answering from memory. Deliberately cheap: a budget of about three tool calls, targeted `rg` and line ranges rather than whole files, no subagents. Leads with the answer, cites the `file:line` behind it, and says "I'd need to check X" instead of guessing. Reads only; it never edits or runs anything with a side effect. |
+| **discuss** | A thinking partner for a decision, not a report. Names the real question, scans only the part of the project the decision touches, and searches the web only when the answer genuinely lives outside the repo — two searches, maximum. Comes back with where it lands first, the two options that survive, what each actually costs, and **what would change its mind**. Ends on the open thread instead of a summary. |
 
 ## Using them without installing
 
@@ -69,6 +73,8 @@ skills/
   add-spring-structure/SKILL.md
   add-owasptopten/SKILL.md
   add-designpattern/SKILL.md
+  ask/SKILL.md
+  discuss/SKILL.md
 ```
 
 Validate any change before pushing:
