@@ -1,13 +1,13 @@
 # cachewraith-skills
 
-Eleven skills for Claude Code that I use daily, packaged as an installable plugin.
+Twelve skills for Claude Code that I use daily, packaged as an installable plugin.
 
 Each one is opinionated about a single job: audit security against a checklist, find
 performance problems that survive contact with load, use the project's own test runner,
 commit with a consistent branch and message convention, and turn a list of endpoints
 into documentation a frontend developer can build against, answer a question without
-spending half a context window on it, or think a decision through before any of it gets
-built.
+spending half a context window on it, think a decision through before any of it gets
+built, or design a UI mockup the way a product designer would.
 
 ## Install
 
@@ -16,7 +16,7 @@ built.
 /plugin install cachewraith-skills@cachewraith-skills
 ```
 
-Restart Claude Code, and the eleven skills load automatically. Claude invokes them when a
+Restart Claude Code, and the twelve skills load automatically. Claude invokes them when a
 request matches, or you can call one by name — `/check-security`, `/testing`, and so on.
 
 To update later:
@@ -46,6 +46,7 @@ To remove:
 | **add-designpattern** | Installs a design-pattern instruction in the project's `CLAUDE.md`: before any non-trivial unit, name the problem shape, the candidates, and the pick. The block is a problem-shape → pattern table rather than a catalog of definitions, and it cuts both ways — the simplest construct that works wins, write the language's idiom instead of the 1994 diagram, and do not retrofit patterns into working code. |
 | **ask** | Answers a question after checking the thing that actually holds the answer — the code, the config, the command output — instead of answering from memory. Deliberately cheap: a budget of about three tool calls, targeted `rg` and line ranges rather than whole files, no subagents. Leads with the answer, cites the `file:line` behind it, and says "I'd need to check X" instead of guessing. Reads only; it never edits or runs anything with a side effect. |
 | **discuss** | A thinking partner for a decision, not a report. Names the real question, scans only the part of the project the decision touches, and searches the web only when the answer genuinely lives outside the repo — two searches, maximum. Comes back with where it lands first, the two options that survive, what each actually costs, and **what would change its mind**. Ends on the open thread instead of a summary. |
+| **design-ui** | Designs a page, screen, or flow and publishes the mockup as an Artifact. Loads [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) first — its design-system search when installed, its priority rules when not — then works in the order a human designer does: brief, real content, structure, hierarchy, spacing, a token system for type and color, every empty/loading/error state, and a responsive layout. A self-critique pass (squint test, Nielsen's heuristics, UI copy, an anti-generic check) runs before it publishes. |
 
 ## Using them without installing
 
@@ -75,6 +76,7 @@ skills/
   add-designpattern/SKILL.md
   ask/SKILL.md
   discuss/SKILL.md
+  design-ui/SKILL.md
 ```
 
 Validate any change before pushing:
