@@ -102,7 +102,8 @@ for an existing benchmark or load test before writing a new one.
 
 ## Report
 
-The deliverable is a published **Artifact link**, not findings pasted into the terminal.
+The deliverable is a published **Artifact link** — or, without one, the local file under
+**Local fallback** below — not findings pasted into the terminal.
 
 In the document, group by severity, worst first:
 
@@ -129,7 +130,12 @@ Re-auditing the same target in the same session → call `Artifact` with the **s
 path** to redeploy to the same URL. An audit from an earlier session → recover the URL with
 `action: "list"` or ask the user, then pass it as `url`. A different target → a new path.
 
-If publishing fails, say so and fall back to a local file, reporting that path.
+**Local fallback** — no `Artifact` tool (Codex, or any agent without it), or publishing
+failed (say so in one line): write the same document to `reports/<basename>` in the
+working directory, and reply with that path where the link would go. Skip the
+`artifact-design` step; plain Markdown is the format. Keep the report out of version
+control — inside a git repo, if `git check-ignore -q reports/` fails, append `reports/`
+to `.gitignore` and mention it in the reply.
 
 ### Reply
 

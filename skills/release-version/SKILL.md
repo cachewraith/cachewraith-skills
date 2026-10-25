@@ -1,6 +1,6 @@
 ---
 name: release-version
-description: "Bump a project's version, update the changelog, tag the release, and push it, in whatever ecosystem the project uses (Node, Python, Rust, Go, PHP, Ruby, Java, .NET, Dart, Elixir, Claude Code plugins). Invoke when the user asks to bump, release, or cut a version, tag a release, or prepare a changelog for one. Skip when they only want an ordinary commit (use checkout-commit) or want the package published to a registry."
+description: "Bump a project's version, update the changelog, tag the release, and push it, in whatever ecosystem the project uses (Node, Python, Rust, Go, PHP, Ruby, Java, .NET, Dart, Elixir, Claude Code and Codex plugins). Invoke when the user asks to bump, release, or cut a version, tag a release, or prepare a changelog for one. Skip when they only want an ordinary commit (use checkout-commit) or want the package published to a registry."
 ---
 
 # Release Version
@@ -25,6 +25,7 @@ one — it keeps lockfiles and metadata in sync, which hand-editing does not.
 | Dart / Flutter | `pubspec.yaml` | edit |
 | Elixir | `mix.exs` | edit |
 | Claude Code plugin | `.claude-plugin/plugin.json` | `claude plugin tag --push` |
+| Codex plugin | `.codex-plugin/plugin.json` (or a root `plugin.json`) | edit; keep it equal to `.claude-plugin/plugin.json` when both exist, and commit it **before** `claude plugin tag` runs |
 
 **Not listed, or a project that keeps the version in several places?** Grep the current
 version string across tracked files and treat every hit as a candidate:
@@ -96,11 +97,15 @@ git tag -a v1.2.0 -m "v1.2.0"
 Match the repo's existing tag style — check `git tag --list | tail`. Common forms are
 `v1.2.0`, bare `1.2.0`, and `package@1.2.0` in monorepos. Go requires the `v`. Claude
 Code plugins use `claude plugin tag`, which writes `{name}--v{version}` and checks that
-`plugin.json` and the marketplace entry agree.
+`plugin.json` and the marketplace entry agree. It tags `HEAD`, so every other version
+file — a `.codex-plugin/plugin.json` included — must already be in the release commit.
+Without the `claude` CLI (in Codex, say), check that agreement yourself and create the
+same `{name}--v{version}` tag with `git tag -a`.
 
 ## 6. Push
 
-Push the release commit and the tag:
+Push the release commit and the tag — in a sandbox without network (Codex's default),
+with network access approved:
 
 ```bash
 git push origin HEAD

@@ -18,7 +18,7 @@ sed -n '/"scripts"/,/}/p' package.json          # JS/TS, then jest/vitest/playwr
 ls phpunit.xml* tox.ini setup.cfg 2>/dev/null   # PHP / Python
 ```
 
-**Read `CLAUDE.md`, `README.md`, and `CONTRIBUTING.md` for test rules first.** Projects
+**Read `CLAUDE.md` / `AGENTS.md`, `README.md`, and `CONTRIBUTING.md` for test rules first.** Projects
 routinely have non-obvious requirements — a real database instead of an in-memory one, an
 env file to source, serial execution, a fixture reset between cases. Those override every
 default here.

@@ -6,14 +6,16 @@ description: "Investigate the API endpoints pasted after `/generate-api-docs` �
 # Generate API Docs
 
 Investigate each endpoint the user pastes, then publish the documentation as an Artifact
-and hand back its `https://claude.ai/code/artifact/<id>` link.
+and hand back its `https://claude.ai/code/artifact/<id>` link — or, without an Artifact
+tool, the path of the local file (see Publish).
 
 Two failure modes define this skill: reformatting the user's URL into Markdown without
 inspecting anything, and leaving finished docs in terminal scrollback. Avoid both.
 
 ## Input
 
-Any line carrying an HTTP method and a URL is an endpoint to document — `GET : <url>`
+Endpoints arrive after `/generate-api-docs` (`$generate-api-docs` in Codex). Any line
+carrying an HTTP method and a URL is an endpoint to document — `GET : <url>`
 and `GET <url>` both count. Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD.
 Text below an endpoint is context for it until the next method line:
 
@@ -50,6 +52,9 @@ Evidence, in order of authority:
 When live behaviour and documentation disagree, document the live behaviour and note the
 mismatch. When an endpoint is unreachable (localhost, VPN, private network), say so
 plainly and continue from docs alone — never claim a URL was called when it was not.
+A sandbox that blocks network (Codex's default sandbox has no network) is not an unreachable endpoint:
+rerun the request with network access approved, or ask the user to allow it, before
+falling back to docs.
 
 ## What counts as verified
 
@@ -142,7 +147,12 @@ Updating: same session, same API → call `Artifact` with the **same file path**
 an earlier session → recover the URL with `action: "list"` or ask the user, then pass it
 as `url`. A genuinely different API → a new file path.
 
-If publishing fails, say so and fall back to a local file, reporting that path.
+**Local fallback** — no `Artifact` tool (Codex, or any agent without it), or publishing
+failed (say so in one line): write the same document to `reports/<basename>` in the
+working directory, and reply with that path where the link would go. Skip the
+`artifact-design` step; plain Markdown is the format. Keep the report out of version
+control — inside a git repo, if `git check-ignore -q reports/` fails, append `reports/`
+to `.gitignore` and mention it in the reply.
 
 ## Reply
 

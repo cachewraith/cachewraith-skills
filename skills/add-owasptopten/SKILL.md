@@ -1,6 +1,6 @@
 ---
 name: add-owasptopten
-description: "Write a standing OWASP Top Ten instruction into the project's CLAUDE.md, so every later change that touches auth, sessions, input handling, data access, secrets, crypto, uploads, outbound requests, dependencies, or logging is checked against the category list before it ships. Invoke when the user asks to add, apply, or enforce OWASP rules in a project, or wants Claude to follow the Top Ten from now on. Skip when they want an actual security audit of existing code — that is check-security."
+description: "Write a standing OWASP Top Ten instruction into the project's CLAUDE.md or AGENTS.md, so every later change that touches auth, sessions, input handling, data access, secrets, crypto, uploads, outbound requests, dependencies, or logging is checked against the category list before it ships. Invoke when the user asks to add, apply, or enforce OWASP rules in a project, or wants the agent to follow the Top Ten from now on. Skip when they want an actual security audit of existing code — that is check-security."
 ---
 
 # Add OWASP Top Ten
@@ -10,14 +10,18 @@ audit it.
 
 ## 1. Pick the target file
 
-Default is `./CLAUDE.md` — the rule then applies to this repo and travels with it. Write
-to `~/.claude/CLAUDE.md` only if the user asks for it everywhere.
+The instruction file depends on the agent running this skill: `CLAUDE.md` in Claude
+Code, `AGENTS.md` in Codex. Use that name wherever this skill says `$F`.
+
+Default is `./$F` — the rule then applies to this repo and travels with it. Write to the
+global file (`~/.claude/CLAUDE.md`, or `${CODEX_HOME:-~/.codex}/AGENTS.md` in Codex) only if the user
+asks for it everywhere.
 
 Check first whether the rule is already in force:
 
 ```bash
-grep -l 'owasp-top-ten:start' CLAUDE.md ~/.claude/CLAUDE.md 2>/dev/null
-grep -ni 'owasp' CLAUDE.md ~/.claude/CLAUDE.md 2>/dev/null | head
+grep -l 'owasp-top-ten:start' CLAUDE.md AGENTS.md ~/.claude/CLAUDE.md "${CODEX_HOME:-$HOME/.codex}/AGENTS.md" 2>/dev/null
+grep -ni 'owasp' CLAUDE.md AGENTS.md ~/.claude/CLAUDE.md "${CODEX_HOME:-$HOME/.codex}/AGENTS.md" 2>/dev/null | head
 ```
 
 Already in the global file? Say so and ask before adding a second copy — two OWASP
@@ -35,7 +39,11 @@ the process is the same, only the labels move. Note the edition you wrote in you
 Managed markers, replaced in place so re-running never duplicates it:
 
 ```bash
-F=CLAUDE.md
+F=CLAUDE.md   # AGENTS.md in Codex
+# One shared file, never two copies: CLAUDE.md that imports @AGENTS.md → write AGENTS.md,
+# which both agents load; then follow symlinks so sed -i edits the target, not the link.
+grep -q '^@AGENTS\.md' CLAUDE.md 2>/dev/null && F=AGENTS.md
+[ -e $F ] && F=$(readlink -f $F)
 [ -f $F ] && sed -i '/<!-- owasp-top-ten:start -->/,/<!-- owasp-top-ten:end -->/d' $F
 cat >> $F <<'MD'
 <!-- owasp-top-ten:start -->
@@ -76,11 +84,11 @@ MD
 ```
 
 The block lands at the end of the file; everything the user already wrote stays put. If
-`CLAUDE.md` does not exist, this creates it.
+`$F` does not exist, this creates it.
 
 ## 4. Tell the user what changed
 
 Name the file, whether it was created or updated, and the edition you wrote (`2021`, or
-newer). Mention that it takes effect from the next session, since `CLAUDE.md` is loaded at
-session start — and that `/check-security` is the skill for auditing what is already
+newer). Mention that it takes effect from the next session, since `$F` is loaded at
+session start — and that `check-security` is the skill for auditing what is already
 there. Then stop — no commit.

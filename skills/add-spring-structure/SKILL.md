@@ -1,12 +1,13 @@
 ---
 name: add-spring-structure
-description: "Lay out a Java Spring Boot project as a versioned, module-per-feature package tree (config, common, security, modules/<feature>/{controller,service,repository,entity,dto,mapper,validator}, integration, scheduler) and record that layout plus its class-naming manifest in CLAUDE.md so every later file lands in the right package under the right name. Invoke when the user asks to add, apply, or scaffold the Spring structure, set up a new Spring Boot project's packages, or add a new feature module. Skip for non-Spring projects and for renaming or moving a single existing class."
+description: "Lay out a Java Spring Boot project as a versioned, module-per-feature package tree (config, common, security, modules/<feature>/{controller,service,repository,entity,dto,mapper,validator}, integration, scheduler) and record that layout plus its class-naming manifest in CLAUDE.md or AGENTS.md so every later file lands in the right package under the right name. Invoke when the user asks to add, apply, or scaffold the Spring structure, set up a new Spring Boot project's packages, or add a new feature module. Skip for non-Spring projects and for renaming or moving a single existing class."
 ---
 
 # Add Spring Structure
 
-Create the package tree, then write the layout contract into `CLAUDE.md` so it survives
-the session. Directories are cheap; write class bodies only when the work needs them.
+Create the package tree, then write the layout contract into the agent's instruction file
+— `CLAUDE.md` in Claude Code, `AGENTS.md` in Codex; `$F` below — so it survives the
+session. Directories are cheap; write class bodies only when the work needs them.
 
 ## 1. Read the project
 
@@ -47,13 +48,17 @@ Drop a `.gitkeep` in any directory you leave empty, or git will not track it.
 Resources: `application.yml` plus `application-dev.yml` / `application-prod.yml`, and
 `db/migration/V1__init.sql` if the project uses Flyway. Create only what is missing.
 
-## 3. Write the contract into CLAUDE.md
+## 3. Write the contract into the instruction file
 
 This is the part that makes the structure stick. Replace the managed block in place so
 re-running never duplicates it, and never touch the rest of the file:
 
 ```bash
-F=CLAUDE.md
+F=CLAUDE.md   # AGENTS.md in Codex
+# One shared file, never two copies: CLAUDE.md that imports @AGENTS.md → write AGENTS.md,
+# which both agents load; then follow symlinks so sed -i edits the target, not the link.
+grep -q '^@AGENTS\.md' CLAUDE.md 2>/dev/null && F=AGENTS.md
+[ -e $F ] && F=$(readlink -f $F)
 [ -f $F ] && sed -i '/<!-- spring-structure:start -->/,/<!-- spring-structure:end -->/d' $F
 cat >> $F <<'MD'
 <!-- spring-structure:start -->
@@ -106,7 +111,7 @@ Rules
 MD
 ```
 
-Substitute the real base package and application class before writing. If `CLAUDE.md`
+Substitute the real base package and application class before writing. If `$F`
 does not exist, this creates it; if it does, the block lands at the end and the user's own
 sections are untouched.
 
@@ -122,5 +127,5 @@ Create one when the work needs it; do not generate empty stubs for the whole tab
 
 ## 5. Report
 
-List what you created (modules and versions), whether `CLAUDE.md` was created or updated,
+List what you created (modules and versions), whether `$F` was created or updated,
 and anything you deliberately left empty. Then stop — no build, no commit.

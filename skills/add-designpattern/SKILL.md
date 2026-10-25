@@ -1,6 +1,6 @@
 ---
 name: add-designpattern
-description: "Write a standing design-pattern instruction into the project's CLAUDE.md, so before building any non-trivial unit Claude weighs the candidate patterns against the shape of the problem, names the one it picked and why, and defaults to the simplest construct when none earns its place. Invoke when the user asks to add, apply, or enforce design patterns in a project, or wants Claude to consider patterns before writing code. Skip when they want an existing design reviewed or refactored — that is code-review or simplify."
+description: "Write a standing design-pattern instruction into the project's CLAUDE.md or AGENTS.md, so before building any non-trivial unit the agent weighs the candidate patterns against the shape of the problem, names the one it picked and why, and defaults to the simplest construct when none earns its place. Invoke when the user asks to add, apply, or enforce design patterns in a project, or wants the agent to consider patterns before writing code. Skip when they want an existing design reviewed or refactored — that is code-review or simplify."
 ---
 
 # Add Design Pattern
@@ -8,17 +8,20 @@ description: "Write a standing design-pattern instruction into the project's CLA
 One job: install a durable instruction. This skill configures the project; it does not
 refactor it.
 
-The instruction is written to bite in both directions — it makes Claude consider the
+The instruction is written to bite in both directions — it makes the agent consider the
 catalog *and* stops it from reaching for a pattern where a function would do. A block that
 only said "use design patterns" would make the codebase worse.
 
 ## 1. Pick the target file and check for duplication
 
-Default `./CLAUDE.md`, so the rule travels with the repo. `~/.claude/CLAUDE.md` only if
-the user wants it everywhere.
+The instruction file depends on the agent running this skill: `CLAUDE.md` in Claude
+Code, `AGENTS.md` in Codex. Use that name wherever this skill says `$F`.
+
+Default `./$F`, so the rule travels with the repo. The global file (`~/.claude/CLAUDE.md`,
+or `${CODEX_HOME:-~/.codex}/AGENTS.md` in Codex) only if the user wants it everywhere.
 
 ```bash
-grep -l 'design-patterns:start' CLAUDE.md ~/.claude/CLAUDE.md 2>/dev/null
+grep -l 'design-patterns:start' CLAUDE.md AGENTS.md ~/.claude/CLAUDE.md "${CODEX_HOME:-$HOME/.codex}/AGENTS.md" 2>/dev/null
 ```
 
 Already present? Say so and ask before adding a second copy.
@@ -35,7 +38,11 @@ If the codebase has an established vocabulary, say so in your report — the blo
 ## 3. Write the block
 
 ```bash
-F=CLAUDE.md
+F=CLAUDE.md   # AGENTS.md in Codex
+# One shared file, never two copies: CLAUDE.md that imports @AGENTS.md → write AGENTS.md,
+# which both agents load; then follow symlinks so sed -i edits the target, not the link.
+grep -q '^@AGENTS\.md' CLAUDE.md 2>/dev/null && F=AGENTS.md
+[ -e $F ] && F=$(readlink -f $F)
 [ -f $F ] && sed -i '/<!-- design-patterns:start -->/,/<!-- design-patterns:end -->/d' $F
 cat >> $F <<'MD'
 <!-- design-patterns:start -->
@@ -86,11 +93,11 @@ Rules
 MD
 ```
 
-The block lands at the end; anything already in the file stays put. Creates `CLAUDE.md` if
+The block lands at the end; anything already in the file stays put. Creates `$F` if
 it does not exist.
 
 ## 4. Report
 
 Name the file, whether it was created or updated, and any pattern vocabulary you found
-already in use. Say that it takes effect next session, since `CLAUDE.md` loads at session
+already in use. Say that it takes effect next session, since `$F` loads at session
 start. Then stop — no refactor, no commit.

@@ -1,6 +1,7 @@
 # cachewraith-skills
 
-Twelve skills for Claude Code that I use daily, packaged as an installable plugin.
+Twelve skills for Claude Code and Codex that I use daily, packaged as an installable plugin
+for both.
 
 Each one is opinionated about a single job: audit security against a checklist, find
 performance problems that survive contact with load, use the project's own test runner,
@@ -10,6 +11,8 @@ spending half a context window on it, think a decision through before any of it 
 built, or design a UI mockup the way a product designer would.
 
 ## Install
+
+### Claude Code
 
 ```
 /plugin marketplace add cachewraith/cachewraith-skills
@@ -31,6 +34,27 @@ To remove:
 /plugin uninstall cachewraith-skills
 ```
 
+### Codex
+
+```bash
+codex plugin marketplace add cachewraith/cachewraith-skills
+codex plugin add cachewraith-skills@cachewraith-skills
+```
+
+Start a new Codex session and the skills load automatically. Codex invokes them when a
+request matches, or you can mention one by name — `$check-security`, `$testing`, and so on.
+Update with `codex plugin marketplace upgrade cachewraith-skills`, remove with
+`codex plugin remove cachewraith-skills@cachewraith-skills`.
+
+The skills behave the same in both agents, with two differences where Codex lacks a
+Claude Code feature:
+
+- The `add-*` skills write their standing instruction to `AGENTS.md` instead of `CLAUDE.md`.
+- The skills that publish an Artifact (`check-security`, `check-performance`,
+  `generate-api-docs`, `design-ui`) write a local file instead — a Markdown report under
+  `reports/`, or a self-contained HTML mockup under `design/` — and return its path. The
+  folder is added to `.gitignore` if git isn't already ignoring it.
+
 ## The skills
 
 | Skill | What it does |
@@ -51,11 +75,13 @@ To remove:
 ## Using them without installing
 
 Any single skill works on its own — copy its directory into `~/.claude/skills/` for
-personal use, or into a project's `.claude/skills/` to share it with a repo:
+personal use, or into a project's `.claude/skills/` to share it with a repo. For Codex, the
+equivalents are `~/.agents/skills/` and a project's `.agents/skills/`:
 
 ```bash
 git clone https://github.com/cachewraith/cachewraith-skills.git
-cp -r cachewraith-skills/skills/check-security ~/.claude/skills/
+cp -r cachewraith-skills/skills/check-security ~/.claude/skills/   # Claude Code
+cp -r cachewraith-skills/skills/check-security ~/.agents/skills/   # Codex
 ```
 
 ## Layout
@@ -64,6 +90,10 @@ cp -r cachewraith-skills/skills/check-security ~/.claude/skills/
 .claude-plugin/
   marketplace.json    # makes the repo installable as a marketplace
   plugin.json         # the plugin manifest
+.codex-plugin/
+  plugin.json         # the Codex plugin manifest (keep its version in step)
+.agents/plugins/
+  marketplace.json    # makes the repo installable as a Codex marketplace
 skills/
   check-security/SKILL.md
   check-performance/SKILL.md
@@ -86,11 +116,19 @@ claude plugin validate . --strict
 claude plugin validate ./skills --strict
 ```
 
+and check that Codex still sees all twelve skills (in a throwaway `CODEX_HOME`):
+
+```bash
+export CODEX_HOME=$(mktemp -d)
+codex plugin marketplace add ./ && codex plugin add cachewraith-skills@cachewraith-skills
+codex debug prompt-input | grep -o 'cachewraith-skills:[a-z-]*' | sort -u
+```
+
 ## Contributing
 
 Issues and pull requests are welcome. If you add a skill, keep the frontmatter
 `description` specific about **when to invoke and when to skip** — that text is the only
-thing Claude sees when deciding whether the skill is relevant, so a vague description
+thing the agent sees when deciding whether the skill is relevant, so a vague description
 means the skill never fires.
 
 ## License

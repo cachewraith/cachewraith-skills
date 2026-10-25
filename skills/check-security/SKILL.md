@@ -137,13 +137,14 @@ you cannot write the exploit sentence, you have a smell, not a finding.
 
 Read the surrounding code first. A check one layer up — guard, middleware, base class,
 policy — is still a check; confirm it is absent rather than assuming from the handler
-body. Check `README.md`, `CLAUDE.md`, `SECURITY.md`, or `MIGRATION.md` too: some
+body. Check `README.md`, `CLAUDE.md`, `AGENTS.md`, `SECURITY.md`, or `MIGRATION.md` too: some
 behaviour is a **documented, deliberate** trade-off, and reproducing a known issue for
 wire compatibility is a decision, not an oversight.
 
 ## Report
 
-The deliverable is a published **Artifact link**, not findings pasted into the terminal.
+The deliverable is a published **Artifact link** — or, without one, the local file under
+**Local fallback** below — not findings pasted into the terminal.
 
 In the document: findings first, worst first, each in the form above. Then one line naming
 the categories checked and found clean — that is the coverage statement. Then anything you
@@ -169,7 +170,12 @@ Re-auditing the same target in the same session → call `Artifact` with the **s
 path** to redeploy to the same URL. An audit from an earlier session → recover the URL with
 `action: "list"` or ask the user, then pass it as `url`. A different target → a new path.
 
-If publishing fails, say so and fall back to a local file, reporting that path.
+**Local fallback** — no `Artifact` tool (Codex, or any agent without it), or publishing
+failed (say so in one line): write the same document to `reports/<basename>` in the
+working directory, and reply with that path where the link would go. Skip the
+`artifact-design` step; plain Markdown is the format. Keep the report out of version
+control — inside a git repo, if `git check-ignore -q reports/` fails, append `reports/`
+to `.gitignore` and mention it in the reply.
 
 ### Reply
 

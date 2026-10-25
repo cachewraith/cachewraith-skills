@@ -19,7 +19,7 @@ Decide before touching a tool:
 | The answer lives in this repo (what does X do, where is Y, is Z wired up) | Look it up. One targeted search, read only the lines that matter. |
 | The answer lives on the machine (versions, branch, what is installed, why a command failed) | Run the one command that shows it. |
 | General knowledge you actually hold, with no project-specific part | Answer straight, no tools. |
-| The answer changed recently or depends on the outside world (a library's current API, a release, a CVE) | Say you'd have to look it up, and do one search — not five. |
+| The answer changed recently or depends on the outside world (a library's current API, a release, a CVE) | Say you'd have to look it up, and do one search — not five. No web search tool (Codex without `--search`, say)? Say what you'd look up instead of guessing. |
 
 Never answer a repo question from memory or from the file tree's shape. If you have not
 seen the line, you do not know it.

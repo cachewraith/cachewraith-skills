@@ -57,6 +57,9 @@ snippet already said. If the question turns on nothing external — a naming cho
 structural call, a tradeoff inside code you have already read — skip this step entirely.
 Most discussions do.
 
+No web search tool (Codex without `--search`, say)? Name the fact you would have looked
+up and treat it as an open assumption in the answer, not a settled one.
+
 Anything you bring back from the web, say where it came from and how current it is.
 
 ## 4. Have the discussion

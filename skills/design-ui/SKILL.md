@@ -18,11 +18,12 @@ Before the brief, before any layout, get the upstream skill into context. In ord
 
 1. **Installed?** Look for it — it may be a plugin or a plain skill:
    ```bash
-   find ~/.claude ~/.claude-accounts .claude -path '*ui-ux-pro-max*' -name SKILL.md 2>/dev/null | head -3
+   find ~/.claude ~/.claude-accounts .claude ~/.codex ~/.agents .agents -path '*ui-ux-pro-max*' -name SKILL.md 2>/dev/null | head -3
    ```
    If found, read that `SKILL.md`, and note the directory: its `scripts/search.py` and
    `references/` live beside it.
-2. **Not installed** — fetch it and read it in full:
+2. **Not installed** — fetch it and read it in full (with network access approved if a
+   sandbox blocks it, as Codex's default does):
    ```
    https://raw.githubusercontent.com/nextlevelbuilder/ui-ux-pro-max-skill/main/.claude/skills/ui-ux-pro-max/SKILL.md
    https://raw.githubusercontent.com/nextlevelbuilder/ui-ux-pro-max-skill/main/.claude/skills/ui-ux-pro-max/references/quick-reference.md
@@ -30,7 +31,9 @@ Before the brief, before any layout, get the upstream skill into context. In ord
    Without the local data the search script cannot run. Tell the user once, in one line,
    that the design-system search is unavailable and they can install it with
    `/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill` then
-   `/plugin install ui-ux-pro-max@ui-ux-pro-max-skill` — then carry on using its priority
+   `/plugin install ui-ux-pro-max@ui-ux-pro-max-skill` (in Codex: `git clone
+   https://github.com/nextlevelbuilder/ui-ux-pro-max-skill`, then `cp -rL
+   ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max ~/.agents/skills/`) — then carry on using its priority
    table and quick-reference rules, and label choices from them as built-in defaults.
 
 When the script is available, use it the way its own skill says:
@@ -124,6 +127,14 @@ Touch targets at least 44×44px with 8px between them. No horizontal page scroll
   "Empty", "Loading", "Error", "Mobile 375" — so the reviewer compares instead of hunts.
 - SVG icons from one set (Lucide, Heroicons, Phosphor). Never emoji as icons.
 
+**No `Artifact` tool** (Codex, or any agent without it): skip the quickstart and
+`artifact-design` bullets, and build the same page as one self-contained HTML file at
+`design/<slug>.html` in the working directory — inline CSS and JS, tokens on `:root` with
+dark-mode overrides, a 16px mobile gutter, fonts and icons from a public CDN. The
+remaining bullets still apply. Keep it out of version control — inside a git repo, if
+`git check-ignore -q design/` fails, append `design/` to `.gitignore` and mention it in
+the reply.
+
 ## 5. Critique before publishing
 
 Designers review their own work before anyone else sees it. Run this pass and fix what
@@ -148,7 +159,7 @@ fails — do not ship a list of known problems.
 
 Publish, then keep the reply short:
 
-- The artifact link.
+- The artifact link, or the HTML file's path when there was no Artifact tool.
 - One or two lines on the direction: the style and palette chosen and *why* for this
   product, and whether it came from a ui-ux-pro-max design-system match or from its
   built-in defaults.
